@@ -1,6 +1,7 @@
 package com.example.serverapp.model.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import com.example.connectorlibrary.enitity.Status
 
@@ -8,5 +9,8 @@ import com.example.connectorlibrary.enitity.Status
 interface IStatusDao {
 
     @Query("SELECT * FROM status")
-    fun getStatus(): List<Status>
+    fun getStatus(): List<Status>?
+
+    @Insert
+    fun insertListStatus(listStatus: List<Status>): List<Long>
 }

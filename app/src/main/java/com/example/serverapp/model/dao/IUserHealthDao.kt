@@ -9,8 +9,8 @@ import com.example.connectorlibrary.enitity.Health
 interface IUserHealthDao {
 
     @Insert
-    fun insertUserHealth(health: Health)
+    fun insertUserHealth(health: Health): Long
 
     @Query("SELECT * FROM health")
-    fun getUserHealths(): List<Health>
+    fun getUserHealths(): List<Health>?
 }
