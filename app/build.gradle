@@ -63,5 +63,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
 
     //AIDL
-    implementation 'com.github.GiangGiang1105:ConnectorLib:0.1.4'
+    implementation 'com.github.GiangGiang1105:ConnectorLib:0.1.5'
 }

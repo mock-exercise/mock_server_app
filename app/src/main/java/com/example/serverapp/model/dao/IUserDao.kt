@@ -18,6 +18,9 @@ interface IUserDao {
     @Query("SELECT EXISTS(SELECT * FROM user WHERE phone_number= :phone_number)")
     fun userSignIn(phone_number: String): Boolean
 
+    @Query("SELECT * FROM user WHERE phone_number= :phone_number")
+    fun getUserByPhone(phone_number: String): User
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateUser(user: User): Int
 
