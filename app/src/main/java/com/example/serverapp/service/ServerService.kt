@@ -59,8 +59,14 @@ class ServerService : Service() {
         return null
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        Log.e(TAG, "onUnbind: ", )
+        return super.onUnbind(intent)
+    }
+    
     override fun onDestroy() {
         super.onDestroy()
+        Log.e(TAG, "onDestroy: ", )
         serviceCallbacks.kill()
     }
 
@@ -69,7 +75,7 @@ class ServerService : Service() {
         ServerApplication.printLog(TAG, "onLowMemory")
     }
 
-    inner class RemoteBinder() : IServerService.Stub() {
+    inner class RemoteBinder : IServerService.Stub() {
 
         override fun registerCallback(callback: IServerServiceCallback?) {
             Log.e(TAG, "registerCallback: 1")
@@ -88,6 +94,7 @@ class ServerService : Service() {
             scope.launch {
                 val isUserExists = userDao.userSignIn(user.phone_number)
                 if (isUserExists) {
+                    Log.e(TAG, "userSignUp: 1", )
                     postFailureResponse(
                         RequestCode.SIGN_UP_REQ,
                         ResponseCode.ERROR_SIGN_UP_WITH_USER_EXISTS
@@ -95,9 +102,11 @@ class ServerService : Service() {
                 } else {
                     val resultId = userDao.userSignUp(user)
                     if (resultId <= -1) {
+                        Log.e(TAG, "userSignUp: 2", )
                         postFailureResponse(RequestCode.SIGN_UP_REQ, ResponseCode.ERROR_SIGN_UP)
                         return@launch
                     } else {
+                        Log.e(TAG, "userSignUp: 23", )
                         val resultUser = userDao.getUser(resultId.toInt())
                         var name: String? = null
                         if (resultUser != null) {
@@ -255,7 +264,7 @@ class ServerService : Service() {
         }
 
         override fun deleteUser(user: User) {
-            ServerApplication.printLog(TAG, "Server service is proccessing delete user...")
+            ServerApplication.printLog(TAG, "Server service is processing delete user...")
             scope.launch {
                 val userId = userDao.deleteUser(user)
                 if (userId > 0) {
@@ -325,7 +334,7 @@ class ServerService : Service() {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
                             .onGetStatisticCovid(
-                                StatisticCovidResponse(
+                                StatisticCovidVnResponse(
                                     ResponseCode.OK,
                                     listStatus
                                 )
@@ -395,6 +404,7 @@ class ServerService : Service() {
             @ResponseCode responseCode: Int
         ) {
             remoteBroadcast { index ->
+                Log.e(TAG, "postFailureResponse: $index", )
                 serviceCallbacks.getBroadcastItem(index).onFailureResponse(
                     FailureResponse(requestCode, responseCode)
                 )

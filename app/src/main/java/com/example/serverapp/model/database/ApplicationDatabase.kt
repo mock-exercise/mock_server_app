@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Database(
-    entities = [User::class, Health::class, Gender::class, Active::class, StatisticCovid::class, Status::class, Symptom::class],
+    entities = [User::class, Health::class, Gender::class, Active::class, StatisticCovidVn::class, Status::class, Symptom::class],
     version = 1,
     exportSchema = false
 )
