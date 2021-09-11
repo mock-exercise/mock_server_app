@@ -1,6 +1,7 @@
 package com.example.serverapp.model.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import com.example.connectorlibrary.enitity.Active
 
@@ -8,5 +9,8 @@ import com.example.connectorlibrary.enitity.Active
 interface IActiveDao {
 
     @Query("SELECT * from active")
-    fun getActives(): List<Active>
+    fun getActives(): List<Active>?
+
+    @Insert
+    fun insertActivies(listActivies: List<Active>): List<Long>
 }

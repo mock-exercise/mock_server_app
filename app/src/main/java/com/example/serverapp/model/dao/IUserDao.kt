@@ -7,10 +7,10 @@ import com.example.connectorlibrary.enitity.User
 interface IUserDao {
 
     @Query("SELECT * FROM user WHERE user_id= :userId")
-    fun getUser(userId: Int): User
+    fun getUser(userId: Int): User?
 
     @Query("SELECT * FROM user")
-    fun getListUser(): List<User>
+    fun getListUser(): List<User>?
 
     @Insert
     fun userSignUp(user: User): Long
