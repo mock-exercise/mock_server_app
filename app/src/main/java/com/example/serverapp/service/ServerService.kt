@@ -10,7 +10,7 @@ import com.example.connectorlibrary.controller.IServerServiceCallback
 import com.example.connectorlibrary.enitity.*
 import com.example.serverapp.R
 import com.example.serverapp.app.ServerApplication
-import com.example.serverapp.di.CoroutineScopeIO
+import com.example.serverapp.di.qualifiers.CoroutineScopeIO
 import com.example.serverapp.model.dao.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -24,8 +24,7 @@ class ServerService : Service() {
     @Inject
     lateinit var scope: CoroutineScope
 
-    @Inject
-    lateinit var serviceCallbacks: RemoteCallbackList<IServerServiceCallback>
+    private val serviceCallbacks = RemoteCallbackList<IServerServiceCallback>()
 
     @Inject
     lateinit var activeDao: IActiveDao
@@ -35,6 +34,9 @@ class ServerService : Service() {
 
     @Inject
     lateinit var statisticCovidDao: IStatisticCovidDao
+
+    @Inject
+    lateinit var historyCovidDao: IHistoryCovidDao
 
     @Inject
     lateinit var statusDao: IStatusDao
@@ -60,13 +62,13 @@ class ServerService : Service() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.e(TAG, "onUnbind: ", )
+        Log.e(TAG, "onUnbind: ")
         return super.onUnbind(intent)
     }
-    
+
     override fun onDestroy() {
         super.onDestroy()
-        Log.e(TAG, "onDestroy: ", )
+        Log.e(TAG, "onDestroy: ")
         serviceCallbacks.kill()
     }
 
@@ -94,7 +96,7 @@ class ServerService : Service() {
             scope.launch {
                 val isUserExists = userDao.userSignIn(user.phone_number)
                 if (isUserExists) {
-                    Log.e(TAG, "userSignUp: 1", )
+                    Log.e(TAG, "userSignUp: 1")
                     postFailureResponse(
                         RequestCode.SIGN_UP_REQ,
                         ResponseCode.ERROR_SIGN_UP_WITH_USER_EXISTS
@@ -102,11 +104,11 @@ class ServerService : Service() {
                 } else {
                     val resultId = userDao.userSignUp(user)
                     if (resultId <= -1) {
-                        Log.e(TAG, "userSignUp: 2", )
+                        Log.e(TAG, "userSignUp: 2")
                         postFailureResponse(RequestCode.SIGN_UP_REQ, ResponseCode.ERROR_SIGN_UP)
                         return@launch
                     } else {
-                        Log.e(TAG, "userSignUp: 23", )
+                        Log.e(TAG, "userSignUp: 23")
                         val resultUser = userDao.getUser(resultId.toInt())
                         var name: String? = null
                         if (resultUser != null) {
@@ -323,21 +325,48 @@ class ServerService : Service() {
             }
         }
 
-        override fun getStatisticCovid() {
+        override fun getStatisticCovidVn() {
             ServerApplication.printLog(TAG, "Server service is proccessing get statistic covid...")
             scope.launch {
-                val listStatus = statisticCovidDao.getStatisticCovid()
-                if (listStatus == null) {
-                    postFailureResponse(RequestCode.GET_STATUS, ResponseCode.ERROR_LIST_STATUS_NULL)
+                val statistic = statisticCovidDao.getStatisticCovidVn()
+                if (statistic == null) {
+                    postFailureResponse(
+                        RequestCode.GET_STATISTIC_COVID_VN,
+                        ResponseCode.ERROR_STATISTIC_COVID_VN_NULL
+                    )
                     return@launch
                 } else {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
-                            .onGetStatisticCovid(
+                            .onGetStatisticCovidVn(
                                 StatisticCovidVnResponse(
                                     ResponseCode.OK,
-                                    listStatus
+                                    statistic
                                 )
+                            )
+                    }
+                }
+            }
+        }
+
+        override fun getStatisticCovidWorld() {
+            ServerApplication.printLog(
+                TAG,
+                "Server service is proccessing get statistic covid of world ..."
+            )
+            scope.launch {
+                val statistic = statisticCovidDao.getStatisticCovidWorld()
+                if (statistic == null) {
+                    postFailureResponse(
+                        RequestCode.GET_STATISTIC_COVID_WORLD,
+                        ResponseCode.ERROR_STATISTIC_COVID_WORLD_NULL
+                    )
+                    return@launch
+                } else {
+                    remoteBroadcast { index ->
+                        serviceCallbacks.getBroadcastItem(index)
+                            .onGetStatisticCovidWorld(
+                                StatisticCovidWorldResponse(ResponseCode.OK, statistic)
                             )
                     }
                 }
@@ -399,12 +428,66 @@ class ServerService : Service() {
             }
         }
 
+        override fun getHistoryCovidVn() {
+            ServerApplication.printLog(
+                TAG,
+                "Server service is proccessing get all history covid of VietNam ..."
+            )
+            scope.launch {
+                val listHistory = historyCovidDao.getHistoryCovidOfVn()
+                if (listHistory == null) {
+                    postFailureResponse(
+                        RequestCode.GET_HISTORY_COVID_VN,
+                        ResponseCode.ERROR_HISTORY_COVID_VN_NULL
+                    )
+                    return@launch
+                } else {
+                    remoteBroadcast { index ->
+                        serviceCallbacks.getBroadcastItem(index).onGetHistoryCovidVn(
+                            HistoryCovidResponse(
+                                RequestCode.GET_HISTORY_COVID_VN,
+                                ResponseCode.OK,
+                                listHistory
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        override fun getHistoryCovidWorld() {
+            ServerApplication.printLog(
+                TAG,
+                "Server service is proccessing get all history covid of World wide  ..."
+            )
+            scope.launch {
+                val listHistory = historyCovidDao.getHistoryCovidOfVn()
+                if (listHistory == null) {
+                    postFailureResponse(
+                        RequestCode.GET_HISTORY_COVID_WORLD,
+                        ResponseCode.ERROR_HISTORY_COVID_WORLD_NULL
+                    )
+                    return@launch
+                } else {
+                    remoteBroadcast { index ->
+                        serviceCallbacks.getBroadcastItem(index).onGetHistoryCovidVn(
+                            HistoryCovidResponse(
+                                RequestCode.GET_HISTORY_COVID_WORLD,
+                                ResponseCode.OK,
+                                listHistory
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
         private fun postFailureResponse(
             @RequestCode requestCode: Int,
             @ResponseCode responseCode: Int
         ) {
             remoteBroadcast { index ->
-                Log.e(TAG, "postFailureResponse: $index", )
+                Log.e(TAG, "postFailureResponse: $index")
                 serviceCallbacks.getBroadcastItem(index).onFailureResponse(
                     FailureResponse(requestCode, responseCode)
                 )

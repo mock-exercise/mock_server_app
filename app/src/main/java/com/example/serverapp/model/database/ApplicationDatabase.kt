@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.connectorlibrary.enitity.*
-import com.example.serverapp.di.ApplicationScope
+import com.example.serverapp.di.qualifiers.ApplicationScope
 import com.example.serverapp.model.dao.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Database(
-    entities = [User::class, Health::class, Gender::class, Active::class, StatisticCovidVn::class, Status::class, Symptom::class],
+    entities = [User::class, Health::class, Gender::class, Active::class, StatisticCovidVn::class, Status::class, Symptom::class, StatisticCovidWorld::class, HistoryCovid::class],
     version = 1,
     exportSchema = false
 )
@@ -23,6 +23,8 @@ abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun getGenderDao(): IGenderDao
 
     abstract fun getStatisticCovidDao(): IStatisticCovidDao
+
+    abstract fun getHistoryCovidDao(): IHistoryCovidDao
 
     abstract fun getStatusDao(): IStatusDao
 
@@ -35,7 +37,7 @@ abstract class ApplicationDatabase : RoomDatabase() {
     class Callback @Inject constructor(
         private val database: Provider<ApplicationDatabase>,
         @ApplicationScope private val applicationScope: CoroutineScope
-    ) : androidx.room.RoomDatabase.Callback() {
+    ) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             val activeDao = database.get().getActiveDao()
