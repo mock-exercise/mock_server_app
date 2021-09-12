@@ -77,4 +77,3 @@ class ApplicationModule {
     fun providesApplicationScope() = CoroutineScope(SupervisorJob())
 
 }
-
