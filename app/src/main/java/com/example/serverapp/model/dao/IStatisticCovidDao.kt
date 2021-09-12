@@ -13,11 +13,11 @@ interface IStatisticCovidDao {
     fun getStatisticCovidVn(): StatisticCovidVn?
 
     @Insert
-    fun insertStatisticCovidVn(list: List<StatisticCovidVn>): List<Long>
+    fun insertStatisticCovidVn(list: StatisticCovidVn): Long
 
     @Query("SELECT * FROM statistic_covid_world ORDER BY statistic_id DESC LIMIT 1")
     fun getStatisticCovidWorld(): StatisticCovidWorld?
 
     @Insert
-    fun insertStatisticCovidWorld(list: List<StatisticCovidWorld>): List<Long>
+    fun insertStatisticCovidWorld(list:StatisticCovidWorld): Long
 }
