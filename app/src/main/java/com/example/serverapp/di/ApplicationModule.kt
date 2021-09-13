@@ -6,6 +6,9 @@ import com.example.serverapp.di.qualifiers.ApplicationScope
 import com.example.serverapp.di.qualifiers.CoroutineScopeIO
 import com.example.serverapp.model.dao.*
 import com.example.serverapp.model.database.ApplicationDatabase
+import com.example.serverapp.model.repository.ServiceRepository
+import com.example.serverapp.model.serviceapi.IServiceCovid
+import com.example.serverapp.utils.Constrants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +17,10 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -22,7 +29,10 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesApplicationDatabase(@ApplicationContext context: Context, callback: ApplicationDatabase.Callback): ApplicationDatabase =
+    fun providesApplicationDatabase(
+        @ApplicationContext context: Context,
+        callback: ApplicationDatabase.Callback
+    ): ApplicationDatabase =
         Room.databaseBuilder(context, ApplicationDatabase::class.java, "ManagementCovid.db")
             .fallbackToDestructiveMigration().addCallback(callback).build()
 
@@ -65,6 +75,37 @@ class ApplicationModule {
     @Singleton
     fun providesUserHealthDao(applicationDatabase: ApplicationDatabase): IUserHealthDao =
         applicationDatabase.getUserHealthDao()
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesApiRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): IServiceCovid =
+        retrofit.create(IServiceCovid::class.java)
+
+    @Provides
+    @Singleton
+    fun providesServiceRepository(
+        iServiceCovid: IServiceCovid,
+        historyCovidDao: IHistoryCovidDao,
+        statisticDao: IStatisticCovidDao
+    ): ServiceRepository = ServiceRepository(iServiceCovid, historyCovidDao, statisticDao)
 
     @CoroutineScopeIO
     @Provides

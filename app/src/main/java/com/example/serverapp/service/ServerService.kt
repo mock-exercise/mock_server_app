@@ -96,7 +96,7 @@ class ServerService : Service() {
             scope.launch {
                 val isUserExists = userDao.userSignIn(user.phone_number)
                 if (isUserExists) {
-                   ServerApplication.printError(TAG, "User is exists... ")
+                    ServerApplication.printError(TAG, "User is exists... ")
                     postFailureResponse(
                         RequestCode.SIGN_UP_REQ,
                         ResponseCode.ERROR_SIGN_UP_WITH_USER_EXISTS
@@ -104,11 +104,11 @@ class ServerService : Service() {
                 } else {
                     val resultId = userDao.userSignUp(user)
                     if (resultId <= -1) {
-                       ServerApplication.printError(TAG, "user sign up unsuccessfully... ")
+                        ServerApplication.printError(TAG, "user sign up unsuccessfully... ")
                         postFailureResponse(RequestCode.SIGN_UP_REQ, ResponseCode.ERROR_SIGN_UP)
                         return@launch
                     } else {
-                       ServerApplication.printLog(TAG, "User sign up successfully...")
+                        ServerApplication.printLog(TAG, "User sign up successfully...")
                         val resultUser = userDao.getUser(resultId.toInt())
                         var name: String? = null
                         if (resultUser != null) {
@@ -134,7 +134,10 @@ class ServerService : Service() {
             scope.launch {
                 val isUserExists = userDao.userSignIn(phone_number)
                 if (!isUserExists) {
-                    ServerApplication.printError(TAG, "Sign in unseccessfully...User is not exists...")
+                    ServerApplication.printError(
+                        TAG,
+                        "Sign in unseccessfully...User is not exists..."
+                    )
                     postFailureResponse(
                         RequestCode.SIGN_IN_REQ,
                         ResponseCode.ERROR_SIGN_IN_USER_NOT_FOUND
@@ -355,7 +358,10 @@ class ServerService : Service() {
                     )
                     return@launch
                 } else {
-                    ServerApplication.printLog(TAG, "List statistic covid Vietnam successfully ... ")
+                    ServerApplication.printLog(
+                        TAG,
+                        "List statistic covid Vietnam successfully ... "
+                    )
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
                             .onGetStatisticCovidVn(
@@ -377,14 +383,20 @@ class ServerService : Service() {
             scope.launch {
                 val statistic = statisticCovidDao.getStatisticCovidWorld()
                 if (statistic == null) {
-                    ServerApplication.printError(TAG, "List statistic covid World wide is null ... ")
+                    ServerApplication.printError(
+                        TAG,
+                        "List statistic covid World wide is null ... "
+                    )
                     postFailureResponse(
                         RequestCode.GET_STATISTIC_COVID_WORLD,
                         ResponseCode.ERROR_STATISTIC_COVID_WORLD_NULL
                     )
                     return@launch
                 } else {
-                    ServerApplication.printLog(TAG, "List statistic covid World wide successfully ... ")
+                    ServerApplication.printLog(
+                        TAG,
+                        "List statistic covid World wide successfully ... "
+                    )
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
                             .onGetStatisticCovidWorld(
@@ -471,7 +483,10 @@ class ServerService : Service() {
                     )
                     return@launch
                 } else {
-                    ServerApplication.printLog(TAG, "List history covid Vietnam is successfully ... ")
+                    ServerApplication.printLog(
+                        TAG,
+                        "List history covid Vietnam is successfully ... "
+                    )
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index).onGetHistoryCovidVn(
                             HistoryCovidResponse(
@@ -500,7 +515,10 @@ class ServerService : Service() {
                     )
                     return@launch
                 } else {
-                    ServerApplication.printLog(TAG, "List history covid World wide is successfully ... ")
+                    ServerApplication.printLog(
+                        TAG,
+                        "List history covid World wide is successfully ... "
+                    )
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index).onGetHistoryCovidWorld(
                             HistoryCovidResponse(

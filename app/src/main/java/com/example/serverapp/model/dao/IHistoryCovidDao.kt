@@ -1,7 +1,6 @@
 package com.example.serverapp.model.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.connectorlibrary.enitity.HistoryCovid
@@ -18,6 +17,6 @@ interface IHistoryCovidDao {
     @Insert
     fun insertHistoryCovid(listHistoryCovid: List<HistoryCovid>): List<Long>
 
-    @Delete(entity = HistoryCovid::class)
+    @Query("DELETE FROM history_covid")
     fun deleteHistoryCovid(): Int
 }

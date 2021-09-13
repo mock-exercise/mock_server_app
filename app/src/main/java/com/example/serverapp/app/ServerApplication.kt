@@ -5,10 +5,51 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.*
+import com.example.serverapp.workermanager.CovidWorker
 import dagger.hilt.android.HiltAndroidApp
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltAndroidApp
-class ServerApplication : Application() {
+class ServerApplication : Application(), Configuration.Provider {
+
+   @Inject
+    lateinit var workManager: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder().setWorkerFactory(workManager).build()
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.e(TAG, "onCreate: application")
+
+        setupHandleInformationCovid()
+
+    }
+
+    private fun setupHandleInformationCovid() {
+        Log.e(TAG, "setupHandleInformationCovid: ")
+        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+            .setRequiresDeviceIdle(true)
+            .build()
+        val repeatingRequest =
+            PeriodicWorkRequestBuilder<CovidWorker>(6, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build()
+        val oneRequest =
+            OneTimeWorkRequestBuilder<CovidWorker>().setConstraints(constraints).build()
+        val one = OneTimeWorkRequest.from(CovidWorker::class.java)
+        WorkManager.getInstance(applicationContext).enqueue(one)
+        /*
+          WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+              CovidWorker.WORK_NAME,
+              ExistingPeriodicWorkPolicy.KEEP,
+              repeatingRequest
+          )*/
+    }
 
     companion object {
 
@@ -42,4 +83,5 @@ class ServerApplication : Application() {
             Log.e(TAG, message)
         }
     }
+
 }
