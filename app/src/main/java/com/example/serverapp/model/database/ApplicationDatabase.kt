@@ -66,11 +66,11 @@ abstract class ApplicationDatabase : RoomDatabase() {
                 )
                 symptomDao.insertSymptoms(
                     listOf(
-                        Symptom(symptom_name = "Sốt"),
-                        Symptom(symptom_name = "Ho"),
-                        Symptom(symptom_name = "Khó thở"),
-                        Symptom(symptom_name = "Đau người, mệt mỏi"),
-                        Symptom(symptom_name = "Sức khỏe tốt")
+                        Symptom(symptom_name = "Sốt", status_id = 2),
+                        Symptom(symptom_name = "Ho", status_id = 2),
+                        Symptom(symptom_name = "Khó thở", status_id = 2),
+                        Symptom(symptom_name = "Đau người, mệt mỏi", status_id = 2),
+                        Symptom(symptom_name = "Sức khỏe tốt", status_id = 1)
                     )
                 )
             }
