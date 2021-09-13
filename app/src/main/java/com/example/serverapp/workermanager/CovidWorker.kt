@@ -4,13 +4,11 @@ import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
-import androidx.work.impl.utils.taskexecutor.TaskExecutor
 import com.example.connectorlibrary.enitity.HistoryCovid
 import com.example.connectorlibrary.enitity.PeopleInDay
 import com.example.serverapp.app.ServerApplication
 import com.example.serverapp.model.repository.ServiceRepository
 import com.example.serverapp.utils.Resource
-import com.google.common.util.concurrent.ListenableFuture
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +33,7 @@ class CovidWorker @AssistedInject constructor(
             coroutineDefault.launch {
                 handleStatisticCovidVn()
                 handleStatisticCovidWorld()
-               // handleHistoryCovid()
+                handleHistoryCovid()
             }
 
         } catch (e: Exception) {
@@ -48,6 +46,7 @@ class CovidWorker @AssistedInject constructor(
     private suspend fun handleStatisticCovidVn() {
         when (val statisticCovid = repository.getStatisticCovidVn()) {
             is Resource.Success ->{
+                Log.e(TAG, "handleStatisticCovidVn: $statisticCovid.value", )
                 repository.insertStatisticCovidVn(statisticCovid.value)
             }
             is Resource.Failure -> {
@@ -93,7 +92,8 @@ class CovidWorker @AssistedInject constructor(
         when (val historyCovid = repository.getHistoryCovidVn()) {
             is Resource.Success -> {
                 val body = historyCovid.value.body()!!.toString()
-                val jsonObject = JSONObject(body)
+                Log.e(TAG, "handleHistoryCovid: $body.", )
+               /* val jsonObject = JSONObject(body)
                 val cases = jsonObject.getJSONObject("timeline").getJSONObject("cases")
                 val listCases = convertJsonObjectToList(cases)
                 listHistory.add(HistoryCovid(area = "vn", status = 1, listPeopleInDay = listCases))
@@ -108,7 +108,7 @@ class CovidWorker @AssistedInject constructor(
                         status = 3,
                         listPeopleInDay = listRecovered
                     )
-                )
+                )*/
 
             }
             is Resource.Failure -> {
@@ -123,7 +123,7 @@ class CovidWorker @AssistedInject constructor(
                 Result.retry()
             }
         }
-        when (val historyCovid = repository.getHistoryCovidWorld()) {
+    /*    when (val historyCovid = repository.getHistoryCovidWorld()) {
             is Resource.Success -> {
                 val body = historyCovid.value.body()!!.toString()
                 val jsonObject = JSONObject(body)
@@ -154,7 +154,7 @@ class CovidWorker @AssistedInject constructor(
                 )
                 Result.retry()
             }
-        }
+        }*/
         if (listHistory.isNotEmpty()) {
             repository.deleteHistoryCovid()
             repository.insertHistoryCovid(listHistory)
