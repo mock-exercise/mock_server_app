@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ServerApp</string>
+    <string name="title_user_list">Danh sách người dùng</string>
+    <string name="total_user">Tổng số User: </string>
 </resources>
