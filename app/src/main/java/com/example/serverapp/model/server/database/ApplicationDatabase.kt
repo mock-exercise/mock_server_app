@@ -1,11 +1,11 @@
-package com.example.serverapp.model.database
+package com.example.serverapp.model.server.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.connectorlibrary.enitity.*
 import com.example.serverapp.di.qualifiers.ApplicationScope
-import com.example.serverapp.model.dao.*
+import com.example.serverapp.model.server.dao.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.example.serverapp.model.serviceapi
+package com.example.serverapp.model.server.serviceapi
 
 import com.example.connectorlibrary.enitity.StatisticCovidVn
 import com.example.connectorlibrary.enitity.StatisticCovidWorld
