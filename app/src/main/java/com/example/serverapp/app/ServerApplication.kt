@@ -32,7 +32,7 @@ class ServerApplication : Application(), Configuration.Provider {
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.UNMETERED)
             .build()
         val repeatingRequest =
-            PeriodicWorkRequestBuilder<CovidWorker>(1, TimeUnit.MINUTES)
+            PeriodicWorkRequestBuilder<CovidWorker>(1, TimeUnit.SECONDS)
                 .setConstraints(constraints)
                 .build()
         WorkManager.getInstance(applicationContext).enqueue(repeatingRequest)

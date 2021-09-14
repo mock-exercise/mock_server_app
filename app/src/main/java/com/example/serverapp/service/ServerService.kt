@@ -109,7 +109,7 @@ class ServerService : Service() {
                         return@launch
                     } else {
                         ServerApplication.printLog(TAG, "User sign up successfully...")
-                        val resultUser = userDao.getUser(resultId.toInt())
+                        val resultUser = userDao.getUserInformation(resultId.toInt())
                         var name: String? = null
                         if (resultUser != null) {
                             name = resultUser.name
@@ -118,7 +118,7 @@ class ServerService : Service() {
                             serviceCallbacks.getBroadcastItem(index).onUserSignUp(
                                 AuthResponse(
                                     RequestCode.SIGN_UP_REQ,
-                                    ResponseCode.OK,
+                                    ResponseCode.SUCCESS,
                                     resultId.toInt(),
                                     name.toString()
                                 )
@@ -149,7 +149,7 @@ class ServerService : Service() {
                         serviceCallbacks.getBroadcastItem(index).onUserSignIn(
                             AuthResponse(
                                 RequestCode.SIGN_IN_REQ,
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 userByPhone.user_id,
                                 userByPhone.name
                             )
@@ -174,7 +174,7 @@ class ServerService : Service() {
                         serviceCallbacks.getBroadcastItem(index).onInsertHealth(
                             HealthResponse(
                                 RequestCode.INSERT_HEALTH,
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 healthId.toInt(),
                                 listHealths
                             )
@@ -204,7 +204,7 @@ class ServerService : Service() {
                         serviceCallbacks.getBroadcastItem(index).onGetUserHealths(
                             HealthResponse(
                                 RequestCode.GET_HEALTHS,
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 null,
                                 listHealths
                             )
@@ -214,10 +214,10 @@ class ServerService : Service() {
             }
         }
 
-        override fun getUser(user_id: Int) {
+        override fun getUserInformation(user_id: Int){
             ServerApplication.printLog(TAG, "Server service is proccessing get user...")
             scope.launch {
-                val user = userDao.getUser(user_id)
+                val user = userDao.getUserInformation(user_id)
                 if (user == null) {
                     ServerApplication.printError(TAG, "Get user unsuccessfully ... ")
                     postFailureResponse(RequestCode.GET_USER, ResponseCode.ERROR_USER_NOT_FOUND)
@@ -225,9 +225,9 @@ class ServerService : Service() {
                 } else {
                     ServerApplication.printLog(TAG, "Get user successfully ... ")
                     remoteBroadcast { index ->
-                        serviceCallbacks.getBroadcastItem(index).onGetUser(
+                        serviceCallbacks.getBroadcastItem(index).onGetUserInformation(
                             UserResponse(
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 RequestCode.GET_USER,
                                 user,
                                 user.user_id
@@ -250,7 +250,7 @@ class ServerService : Service() {
                     ServerApplication.printLog(TAG, "Get all users successfully ... ")
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
-                            .onGetAllUsers(ListUsersResponse(ResponseCode.OK, listAllUsers))
+                            .onGetAllUsers(ListUsersResponse(ResponseCode.SUCCESS, listAllUsers))
                     }
                 }
             }
@@ -265,7 +265,7 @@ class ServerService : Service() {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index).onUpdateUser(
                             UserResponse(
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 RequestCode.UPDATE_USER,
                                 null,
                                 userId
@@ -289,7 +289,7 @@ class ServerService : Service() {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index).onDeleteUser(
                             UserResponse(
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 RequestCode.DELETE_USER,
                                 null,
                                 userId
@@ -313,7 +313,7 @@ class ServerService : Service() {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index).onDeleteUser(
                             UserResponse(
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 RequestCode.LOCK_USER,
                                 null,
                                 userId
@@ -340,7 +340,7 @@ class ServerService : Service() {
                     ServerApplication.printLog(TAG, "Get status successfully ... ")
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
-                            .onGetStatus(StatusResponse(ResponseCode.OK, listStatus))
+                            .onGetStatus(StatusResponse(ResponseCode.SUCCESS, listStatus))
                     }
                 }
             }
@@ -366,7 +366,7 @@ class ServerService : Service() {
                         serviceCallbacks.getBroadcastItem(index)
                             .onGetStatisticCovidVn(
                                 StatisticCovidVnResponse(
-                                    ResponseCode.OK,
+                                    ResponseCode.SUCCESS,
                                     statistic
                                 )
                             )
@@ -400,7 +400,7 @@ class ServerService : Service() {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
                             .onGetStatisticCovidWorld(
-                                StatisticCovidWorldResponse(ResponseCode.OK, statistic)
+                                StatisticCovidWorldResponse(ResponseCode.SUCCESS, statistic)
                             )
                     }
                 }
@@ -423,7 +423,7 @@ class ServerService : Service() {
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index).onGetSymptom(
                             SymptomResponse(
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 listSymptom
                             )
                         )
@@ -444,7 +444,7 @@ class ServerService : Service() {
                     ServerApplication.printLog(TAG, "List symptom is Successfully ... ")
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
-                            .onGetActive(ActiveResponse(ResponseCode.OK, listActive))
+                            .onGetActive(ActiveResponse(ResponseCode.SUCCESS, listActive))
                     }
                 }
             }
@@ -462,7 +462,7 @@ class ServerService : Service() {
                     ServerApplication.printLog(TAG, "List symptom is successfully ... ")
                     remoteBroadcast { index ->
                         serviceCallbacks.getBroadcastItem(index)
-                            .onGetGender(GenderResponse(ResponseCode.OK, listGender))
+                            .onGetGender(GenderResponse(ResponseCode.SUCCESS, listGender))
                     }
                 }
             }
@@ -491,7 +491,7 @@ class ServerService : Service() {
                         serviceCallbacks.getBroadcastItem(index).onGetHistoryCovidVn(
                             HistoryCovidResponse(
                                 RequestCode.GET_HISTORY_COVID_VN,
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 listHistory
                             )
                         )
@@ -523,7 +523,7 @@ class ServerService : Service() {
                         serviceCallbacks.getBroadcastItem(index).onGetHistoryCovidWorld(
                             HistoryCovidResponse(
                                 RequestCode.GET_HISTORY_COVID_WORLD,
-                                ResponseCode.OK,
+                                ResponseCode.SUCCESS,
                                 listHistory
                             )
                         )
