@@ -1,12 +1,12 @@
-package com.example.serverapp.model.server.repository
+package com.example.serverapp.server.data.repository
 
 import com.example.connectorlibrary.enitity.HistoryCovid
 import com.example.connectorlibrary.enitity.StatisticCovidVn
 import com.example.connectorlibrary.enitity.StatisticCovidWorld
 import com.example.serverapp.base.BaseRepository
-import com.example.serverapp.model.server.dao.IHistoryCovidDao
-import com.example.serverapp.model.server.dao.IStatisticCovidDao
-import com.example.serverapp.model.server.serviceapi.IServiceCovid
+import com.example.serverapp.server.data.local.dao.IHistoryCovidDao
+import com.example.serverapp.server.data.local.dao.IStatisticCovidDao
+import com.example.serverapp.server.data.remote.serviceapi.IServiceCovid
 import javax.inject.Inject
 
 class ServiceRepository @Inject constructor(

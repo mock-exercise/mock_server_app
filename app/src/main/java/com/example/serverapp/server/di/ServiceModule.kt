@@ -1,13 +1,15 @@
-package com.example.serverapp.di
+package com.example.serverapp.server.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.serverapp.di.qualifiers.ApplicationScope
-import com.example.serverapp.di.qualifiers.CoroutineScopeIO
-import com.example.serverapp.model.server.dao.*
-import com.example.serverapp.model.server.database.ApplicationDatabase
-import com.example.serverapp.model.server.repository.ServiceRepository
-import com.example.serverapp.model.server.serviceapi.IServiceCovid
+import com.example.connectorlibrary.controller.ServiceControllerAdmin
+import com.example.serverapp.admin.data.remoteservice.AdminService
+import com.example.serverapp.server.di.qualifiers.ApplicationScope
+import com.example.serverapp.server.di.qualifiers.CoroutineScopeIO
+import com.example.serverapp.server.data.local.dao.*
+import com.example.serverapp.server.data.local.database.ApplicationDatabase
+import com.example.serverapp.server.data.repository.ServiceRepository
+import com.example.serverapp.server.data.remote.serviceapi.IServiceCovid
 import com.example.serverapp.utils.Constrants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -25,7 +27,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApplicationModule {
+class ServiceModule {
 
     @Provides
     @Singleton

@@ -3,7 +3,6 @@
     android:id="@+id/home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToOutline="true"
     android:background="@drawable/home"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView

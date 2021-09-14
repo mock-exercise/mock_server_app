@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
-import com.example.serverapp.workermanager.CovidWorker
+import com.example.serverapp.server.workermanager.CovidWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

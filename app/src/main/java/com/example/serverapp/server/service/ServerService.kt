@@ -1,4 +1,4 @@
-package com.example.serverapp.service
+package com.example.serverapp.server.service
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -13,8 +13,8 @@ import com.example.connectorlibrary.controller.IServerServiceCallback
 import com.example.connectorlibrary.enitity.*
 import com.example.serverapp.R
 import com.example.serverapp.app.ServerApplication
-import com.example.serverapp.di.qualifiers.CoroutineScopeIO
-import com.example.serverapp.model.server.dao.*
+import com.example.serverapp.server.di.qualifiers.CoroutineScopeIO
+import com.example.serverapp.server.data.local.dao.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -556,6 +556,7 @@ class ServerService : Service() {
                 }
             }
             serviceCallbacks.finishBroadcast()
+            Log.e(TAG, "remoteBroadcast: ", )
         }
 
     }

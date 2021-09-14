@@ -1,4 +1,4 @@
-package com.example.serverapp.di.qualifiers
+package com.example.serverapp.server.di.qualifiers
 
 import javax.inject.Qualifier
 
