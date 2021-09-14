@@ -1,5 +1,6 @@
 package com.example.serverapp.workermanager
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
@@ -16,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import javax.inject.Inject
 
 @HiltWorker
 class CovidWorker @AssistedInject constructor(
@@ -30,12 +30,10 @@ class CovidWorker @AssistedInject constructor(
     override fun doWork(): Result {
         Log.e(TAG, "doWork: ")
         try {
-            coroutineDefault.launch {
-                handleStatisticCovidVn()
-                handleStatisticCovidWorld()
-                handleHistoryCovid()
-            }
-
+            handleStatisticCovidVn()
+            handleStatisticCovidWorld()
+            handleHistoryCovidVn()
+            handleHistoryCovidWorld()
         } catch (e: Exception) {
             e.printStackTrace()
             Result.retry()
@@ -43,127 +41,98 @@ class CovidWorker @AssistedInject constructor(
         return Result.success()
     }
 
-    private suspend fun handleStatisticCovidVn() {
+    private fun handleStatisticCovidVn() = coroutineDefault.launch {
         when (val statisticCovid = repository.getStatisticCovidVn()) {
-            is Resource.Success ->{
-                Log.e(TAG, "handleStatisticCovidVn: $statisticCovid.value", )
+            is Resource.Success -> {
+                Log.e(TAG, "handleStatisticCovidVn1: $statisticCovid.value")
                 repository.insertStatisticCovidVn(statisticCovid.value)
             }
             is Resource.Failure -> {
-                if (statisticCovid.isNetworkError)
-                    ServerApplication.printError(TAG, "Error network...")
-                if (statisticCovid.errorBody != null)
-                    ServerApplication.printError(
-                        TAG,
-                        "Error body: ${statisticCovid.errorBody}"
-                    )
-                if (statisticCovid.errorCode != null) ServerApplication.printError(
-                    TAG,
-                    "Error code: ${statisticCovid.errorCode}"
-                )
+                handleFailure(statisticCovid)
                 Result.retry()
             }
         }
     }
 
-    private suspend fun handleStatisticCovidWorld() {
+    private fun handleStatisticCovidWorld() = coroutineDefault.launch {
         when (val statisticCovid = repository.getStatisticCovidWorld()) {
             is Resource.Success ->
                 repository.insertStatisticCovidWorld(statisticCovid.value)
             is Resource.Failure -> {
-                if (statisticCovid.isNetworkError)
-                    ServerApplication.printError(TAG, "Error network...")
-                if (statisticCovid.errorBody != null)
-                    ServerApplication.printError(
-                        TAG,
-                        "Error body: ${statisticCovid.errorBody}"
-                    )
-                if (statisticCovid.errorCode != null) ServerApplication.printError(
-                    TAG,
-                    "Error code: ${statisticCovid.errorCode}"
-                )
+                handleFailure(statisticCovid)
                 Result.retry()
             }
         }
     }
 
-    private suspend fun handleHistoryCovid() {
-        val listHistory = arrayListOf<HistoryCovid>()
+    private fun handleHistoryCovidVn() = coroutineDefault.launch {
         when (val historyCovid = repository.getHistoryCovidVn()) {
             is Resource.Success -> {
-                val body = historyCovid.value.body()!!.toString()
-                Log.e(TAG, "handleHistoryCovid: $body.", )
-               /* val jsonObject = JSONObject(body)
-                val cases = jsonObject.getJSONObject("timeline").getJSONObject("cases")
-                val listCases = convertJsonObjectToList(cases)
-                listHistory.add(HistoryCovid(area = "vn", status = 1, listPeopleInDay = listCases))
-                val deaths = jsonObject.getJSONObject("timeline").getJSONObject("deaths")
-                val listDeaths = convertJsonObjectToList(deaths)
-                listHistory.add(HistoryCovid(area = "vn", status = 2, listPeopleInDay = listDeaths))
-                val recovered = jsonObject.getJSONObject("timeline").getJSONObject("recovered")
-                val listRecovered = convertJsonObjectToList(recovered)
-                listHistory.add(
-                    HistoryCovid(
-                        area = "vn",
-                        status = 3,
-                        listPeopleInDay = listRecovered
-                    )
-                )*/
-
+                val jsonObject = JSONObject(historyCovid.value.body()!!.string())
+                val historyJson = jsonObject.getJSONObject("timeline")
+                handleSuccessHistoryCovid(historyJson, "vn")
             }
             is Resource.Failure -> {
-                if (historyCovid.isNetworkError)
-                    ServerApplication.printError(TAG, "Error network...")
-                if (historyCovid.errorBody != null)
-                    ServerApplication.printError(TAG, "Error body: ${historyCovid.errorBody}")
-                if (historyCovid.errorCode != null) ServerApplication.printError(
-                    TAG,
-                    "Error code: ${historyCovid.errorCode}"
-                )
+                handleFailure(historyCovid)
                 Result.retry()
             }
         }
-    /*    when (val historyCovid = repository.getHistoryCovidWorld()) {
-            is Resource.Success -> {
-                val body = historyCovid.value.body()!!.toString()
-                val jsonObject = JSONObject(body)
-                val cases = jsonObject.getJSONObject("cases")
-                val listCases = convertJsonObjectToList(cases)
-                listHistory.add(HistoryCovid(status = 1, listPeopleInDay = listCases))
-                val deaths = jsonObject.getJSONObject("deaths")
-                val listDeaths = convertJsonObjectToList(deaths)
-                listHistory.add(HistoryCovid(status = 2, listPeopleInDay = listDeaths))
-                val recovered = jsonObject.getJSONObject("recovered")
-                val listRecovered = convertJsonObjectToList(recovered)
-                listHistory.add(
-                    HistoryCovid(
-                        status = 3,
-                        listPeopleInDay = listRecovered
-                    )
-                )
 
+    }
+
+    private fun handleHistoryCovidWorld() = coroutineDefault.launch {
+        when (val historyCovid = repository.getHistoryCovidWorld()) {
+            is Resource.Success -> {
+                handleSuccessHistoryCovid(JSONObject(historyCovid.value.body()!!.string()), "all")
             }
             is Resource.Failure -> {
-                if (historyCovid.isNetworkError)
-                    ServerApplication.printError(TAG, "Error network...")
-                if (historyCovid.errorBody != null)
-                    ServerApplication.printError(TAG, "Error body: ${historyCovid.errorBody}")
-                if (historyCovid.errorCode != null) ServerApplication.printError(
-                    TAG,
-                    "Error code: ${historyCovid.errorCode}"
-                )
+                handleFailure(historyCovid)
                 Result.retry()
             }
-        }*/
-        if (listHistory.isNotEmpty()) {
-            repository.deleteHistoryCovid()
-            repository.insertHistoryCovid(listHistory)
-            Log.e(TAG, "handleHistoryCovid: $listHistory")
-        } else {
-            Result.retry()
         }
     }
 
+    private suspend fun handleSuccessHistoryCovid(jsonObject: JSONObject, area: String) {
+        val listHistory = arrayListOf<HistoryCovid>()
+        val keySets = jsonObject.keys()
+        while (keySets.hasNext()) {
+            val key_a = keySets.next()
+            if (key_a == "cases") {
+                val list =
+                    convertJsonObjectToList(jsonObject.getJSONObject(key_a))
+                listHistory.add(HistoryCovid(area = area, status = 1, listPeopleInDay = list))
+            }
+            if (key_a == "deaths") {
+                val list =
+                    convertJsonObjectToList(jsonObject.getJSONObject(key_a))
+                listHistory.add(HistoryCovid(area = area, status = 2, listPeopleInDay = list))
+            }
+            if (key_a == "recovered") {
+                val list =
+                    convertJsonObjectToList(jsonObject.getJSONObject(key_a))
+                listHistory.add(HistoryCovid(area = area, status = 3, listPeopleInDay = list))
+            }
+        }
+        if (listHistory.isNotEmpty()) {
+            if (area == "vn") {
+                repository.deleteHistoryCovidVn()
+            } else if (area == "all") repository.deleteHistoryCovidWorld()
+            repository.insertHistoryCovid(*listHistory.toTypedArray())
+        } else Result.retry()
+    }
+
+    private fun handleFailure(failure: Resource.Failure) {
+        if (failure.isNetworkError)
+            ServerApplication.printError(TAG, "Error network...")
+        if (failure.errorBody != null)
+            ServerApplication.printError(TAG, "Error body: ${failure.errorBody}")
+        if (failure.errorCode != null) ServerApplication.printError(
+            TAG,
+            "Error code: ${failure.errorCode}"
+        )
+    }
+
+    @SuppressLint("SimpleDateFormat")
     private fun convertJsonObjectToList(jsonObject: JSONObject): List<PeopleInDay> {
         val listPeopleInDay = arrayListOf<PeopleInDay>()
         val keySets = jsonObject.keys()
@@ -177,6 +146,5 @@ class CovidWorker @AssistedInject constructor(
 
     companion object {
         val TAG: String = CovidWorker::class.java.name
-        const val WORK_NAME = "com.example.serverapp.workermanager.CovidWorker"
     }
 }

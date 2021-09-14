@@ -33,12 +33,16 @@ class ServiceRepository @Inject constructor(
         iServiceCovid.getHistoryCovidWorld()
     }
 
-    suspend fun insertHistoryCovid(listHistoryCovid: List<HistoryCovid>) = safeApiCall {
-        historyCovidDao.insertHistoryCovid(listHistoryCovid)
+    suspend fun insertHistoryCovid(vararg listHistoryCovid: HistoryCovid) = safeApiCall {
+        historyCovidDao.insertHistoryCovid(*listHistoryCovid)
     }
 
-    suspend fun deleteHistoryCovid() = safeApiCall {
-        historyCovidDao.deleteHistoryCovid()
+    suspend fun deleteHistoryCovidVn() = safeApiCall {
+        historyCovidDao.deleteHistoryCovidVn()
+    }
+
+    suspend fun deleteHistoryCovidWorld() = safeApiCall {
+        historyCovidDao.deleteHistoryCovidWorld()
     }
 
     suspend fun insertStatisticCovidVn(list: StatisticCovidVn) = safeApiCall {
@@ -49,4 +53,7 @@ class ServiceRepository @Inject constructor(
         statisticDao.insertStatisticCovidWorld(list)
     }
 
+    suspend fun getHistory() = safeApiCall {
+        historyCovidDao.getHistoryCovidOfVn()
+    }
 }
