@@ -8,7 +8,7 @@ import androidx.work.*
 import com.example.connectorlibrary.enitity.HistoryCovid
 import com.example.connectorlibrary.enitity.PeopleInDay
 import com.example.serverapp.app.ServerApplication
-import com.example.serverapp.model.repository.ServiceRepository
+import com.example.serverapp.model.server.repository.ServiceRepository
 import com.example.serverapp.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

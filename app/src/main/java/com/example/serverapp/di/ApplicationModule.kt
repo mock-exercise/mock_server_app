@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.serverapp.di.qualifiers.ApplicationScope
 import com.example.serverapp.di.qualifiers.CoroutineScopeIO
-import com.example.serverapp.model.dao.*
-import com.example.serverapp.model.database.ApplicationDatabase
-import com.example.serverapp.model.repository.ServiceRepository
-import com.example.serverapp.model.serviceapi.IServiceCovid
+import com.example.serverapp.model.server.dao.*
+import com.example.serverapp.model.server.database.ApplicationDatabase
+import com.example.serverapp.model.server.repository.ServiceRepository
+import com.example.serverapp.model.server.serviceapi.IServiceCovid
 import com.example.serverapp.utils.Constrants.BASE_URL
 import dagger.Module
 import dagger.Provides

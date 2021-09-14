@@ -1,4 +1,4 @@
-package com.example.serverapp.model.dao
+package com.example.serverapp.model.server.dao
 
 import androidx.room.*
 import com.example.connectorlibrary.enitity.User

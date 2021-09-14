@@ -1,14 +1,13 @@
-package com.example.serverapp.model.repository
+package com.example.serverapp.model.server.repository
 
 import com.example.connectorlibrary.enitity.HistoryCovid
 import com.example.connectorlibrary.enitity.StatisticCovidVn
 import com.example.connectorlibrary.enitity.StatisticCovidWorld
 import com.example.serverapp.base.BaseRepository
-import com.example.serverapp.model.dao.IHistoryCovidDao
-import com.example.serverapp.model.dao.IStatisticCovidDao
-import com.example.serverapp.model.serviceapi.IServiceCovid
+import com.example.serverapp.model.server.dao.IHistoryCovidDao
+import com.example.serverapp.model.server.dao.IStatisticCovidDao
+import com.example.serverapp.model.server.serviceapi.IServiceCovid
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class ServiceRepository @Inject constructor(
     private val iServiceCovid: IServiceCovid,

@@ -1,17 +1,20 @@
 package com.example.serverapp.service
 
+import android.app.Notification
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.RemoteCallbackList
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.example.connectorlibrary.controller.IServerService
 import com.example.connectorlibrary.controller.IServerServiceCallback
 import com.example.connectorlibrary.enitity.*
 import com.example.serverapp.R
 import com.example.serverapp.app.ServerApplication
 import com.example.serverapp.di.qualifiers.CoroutineScopeIO
-import com.example.serverapp.model.dao.*
+import com.example.serverapp.model.server.dao.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -214,7 +217,7 @@ class ServerService : Service() {
             }
         }
 
-        override fun getUserInformation(user_id: Int){
+        override fun getUserInformation(user_id: Int) {
             ServerApplication.printLog(TAG, "Server service is proccessing get user...")
             scope.launch {
                 val user = userDao.getUserInformation(user_id)
@@ -557,7 +560,35 @@ class ServerService : Service() {
 
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        startForeground(NOTIFICATION_ID, createNotification("Running... "))
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP) {
+            stopSelf()
+            stopForeground(true)
+        }
+        return START_STICKY
+    }
+
+    private fun createNotification(content: String): Notification {
+        val intent = Intent(this, ServerService::class.java).apply {
+            action = ACTION_STOP
+        }
+        val pendingService = PendingIntent.getService(this, 0, intent, 0)
+        return NotificationCompat.Builder(this, ServerApplication.CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentIntent(pendingService)
+            .setContentTitle("Connect Server")
+            .setContentText(content)
+            .setOngoing(true).build()
+    }
+
     companion object {
         val TAG: String = ServerService::class.java.name
+        private const val ACTION_STOP = "Stop Server"
+        private const val NOTIFICATION_ID = 10
     }
 }
