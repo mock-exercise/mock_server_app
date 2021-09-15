@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Database(
-    entities = [User::class, Health::class, Gender::class, Active::class, StatisticCovidVn::class, Status::class, Symptom::class, StatisticCovidWorld::class, HistoryCovid::class],
+    entities = [User::class, Health::class, Gender::class, Active::class, Status::class, Symptom::class,  HistoryCovid::class],
     version = 1,
     exportSchema = false
 )
@@ -21,8 +21,6 @@ abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun getActiveDao(): IActiveDao
 
     abstract fun getGenderDao(): IGenderDao
-
-    abstract fun getStatisticCovidDao(): IStatisticCovidDao
 
     abstract fun getHistoryCovidDao(): IHistoryCovidDao
 

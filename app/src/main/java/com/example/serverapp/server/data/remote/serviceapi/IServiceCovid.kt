@@ -1,19 +1,11 @@
 package com.example.serverapp.server.data.remote.serviceapi
 
-import com.example.connectorlibrary.enitity.StatisticCovidVn
-import com.example.connectorlibrary.enitity.StatisticCovidWorld
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface IServiceCovid {
-
-    @GET("countries/{country}")
-    suspend fun getStatisticCovidVn(@Path("country") country: String ="vn") :StatisticCovidVn
-
-    @GET("all")
-    suspend fun getStatisticCovidWorld(): StatisticCovidWorld
 
     @GET("historical/{country}")
     suspend fun getHistoryCovidVn(

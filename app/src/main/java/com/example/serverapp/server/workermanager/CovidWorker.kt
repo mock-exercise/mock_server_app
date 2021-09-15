@@ -9,7 +9,7 @@ import com.example.connectorlibrary.enitity.HistoryCovid
 import com.example.connectorlibrary.enitity.PeopleInDay
 import com.example.serverapp.app.ServerApplication
 import com.example.serverapp.server.data.repository.ServiceRepository
-import com.example.serverapp.utils.Resource
+import com.example.serverapp.server.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -30,8 +30,6 @@ class CovidWorker @AssistedInject constructor(
     override fun doWork(): Result {
         Log.e(TAG, "doWork: ")
         try {
-            handleStatisticCovidVn()
-            handleStatisticCovidWorld()
             handleHistoryCovidVn()
             handleHistoryCovidWorld()
         } catch (e: Exception) {
@@ -39,30 +37,6 @@ class CovidWorker @AssistedInject constructor(
             Result.retry()
         }
         return Result.success()
-    }
-
-    private fun handleStatisticCovidVn() = coroutineDefault.launch {
-        when (val statisticCovid = repository.getStatisticCovidVn()) {
-            is Resource.Success -> {
-                Log.e(TAG, "handleStatisticCovidVn1: $statisticCovid.value")
-                repository.insertStatisticCovidVn(statisticCovid.value)
-            }
-            is Resource.Failure -> {
-                handleFailure(statisticCovid)
-                Result.retry()
-            }
-        }
-    }
-
-    private fun handleStatisticCovidWorld() = coroutineDefault.launch {
-        when (val statisticCovid = repository.getStatisticCovidWorld()) {
-            is Resource.Success ->
-                repository.insertStatisticCovidWorld(statisticCovid.value)
-            is Resource.Failure -> {
-                handleFailure(statisticCovid)
-                Result.retry()
-            }
-        }
     }
 
     private fun handleHistoryCovidVn() = coroutineDefault.launch {
