@@ -6,6 +6,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.RemoteCallbackList
+import android.os.RemoteException
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.connectorlibrary.controller.IServerService
@@ -34,9 +35,6 @@ class ServerService : Service() {
 
     @Inject
     lateinit var genderDao: IGenderDao
-
-    @Inject
-    lateinit var statisticCovidDao: IStatisticCovidDao
 
     @Inject
     lateinit var historyCovidDao: IHistoryCovidDao
@@ -349,67 +347,6 @@ class ServerService : Service() {
             }
         }
 
-        override fun getStatisticCovidVn() {
-            ServerApplication.printLog(TAG, "Server service is proccessing get statistic covid...")
-            scope.launch {
-                val statistic = statisticCovidDao.getStatisticCovidVn()
-                if (statistic == null) {
-                    ServerApplication.printError(TAG, "List statistic covid Vietnam is null ... ")
-                    postFailureResponse(
-                        RequestCode.GET_STATISTIC_COVID_VN,
-                        ResponseCode.ERROR_STATISTIC_COVID_VN_NULL
-                    )
-                    return@launch
-                } else {
-                    ServerApplication.printLog(
-                        TAG,
-                        "List statistic covid Vietnam successfully ... "
-                    )
-                    remoteBroadcast { index ->
-                        serviceCallbacks.getBroadcastItem(index)
-                            .onGetStatisticCovidVn(
-                                StatisticCovidVnResponse(
-                                    ResponseCode.SUCCESS,
-                                    statistic
-                                )
-                            )
-                    }
-                }
-            }
-        }
-
-        override fun getStatisticCovidWorld() {
-            ServerApplication.printLog(
-                TAG,
-                "Server service is proccessing get statistic covid of world ..."
-            )
-            scope.launch {
-                val statistic = statisticCovidDao.getStatisticCovidWorld()
-                if (statistic == null) {
-                    ServerApplication.printError(
-                        TAG,
-                        "List statistic covid World wide is null ... "
-                    )
-                    postFailureResponse(
-                        RequestCode.GET_STATISTIC_COVID_WORLD,
-                        ResponseCode.ERROR_STATISTIC_COVID_WORLD_NULL
-                    )
-                    return@launch
-                } else {
-                    ServerApplication.printLog(
-                        TAG,
-                        "List statistic covid World wide successfully ... "
-                    )
-                    remoteBroadcast { index ->
-                        serviceCallbacks.getBroadcastItem(index)
-                            .onGetStatisticCovidWorld(
-                                StatisticCovidWorldResponse(ResponseCode.SUCCESS, statistic)
-                            )
-                    }
-                }
-            }
-        }
-
         override fun getSymptom() {
             ServerApplication.printLog(TAG, "Server service is proccessing get symptom ...")
             scope.launch {
@@ -548,15 +485,20 @@ class ServerService : Service() {
         }
 
         private fun remoteBroadcast(block: (Int) -> Unit) {
-            val count = serviceCallbacks.beginBroadcast()
-            for (index in 0 until count) {
-                if (serviceCallbacks.getBroadcastCookie(index) == this@RemoteBinder) {
-                    block.invoke(index)
-                    break
+            synchronized(this) {
+                val count = serviceCallbacks.beginBroadcast()
+                for (index in 0 until count) {
+                    try {
+                        if (serviceCallbacks.getBroadcastCookie(index) == this@RemoteBinder) {
+                            block.invoke(index)
+                            break
+                        }
+                    } catch (e: RemoteException) {
+                        e.printStackTrace()
+                    }
                 }
+                serviceCallbacks.finishBroadcast()
             }
-            serviceCallbacks.finishBroadcast()
-            Log.e(TAG, "remoteBroadcast: ", )
         }
 
     }
@@ -593,3 +535,5 @@ class ServerService : Service() {
         private const val NOTIFICATION_ID = 10
     }
 }
+
+

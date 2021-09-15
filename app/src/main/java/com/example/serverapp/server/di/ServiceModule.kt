@@ -2,7 +2,6 @@ package com.example.serverapp.server.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.connectorlibrary.controller.ServiceControllerAdmin
 import com.example.serverapp.admin.data.remoteservice.AdminService
 import com.example.serverapp.server.di.qualifiers.ApplicationScope
 import com.example.serverapp.server.di.qualifiers.CoroutineScopeIO
@@ -10,7 +9,7 @@ import com.example.serverapp.server.data.local.dao.*
 import com.example.serverapp.server.data.local.database.ApplicationDatabase
 import com.example.serverapp.server.data.repository.ServiceRepository
 import com.example.serverapp.server.data.remote.serviceapi.IServiceCovid
-import com.example.serverapp.utils.Constrants.BASE_URL
+import com.example.serverapp.server.utils.Constrants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,11 +46,6 @@ class ServiceModule {
     @Singleton
     fun providesGenderDao(applicationDatabase: ApplicationDatabase): IGenderDao =
         applicationDatabase.getGenderDao()
-
-    @Provides
-    @Singleton
-    fun providesStatisticDao(applicationDatabase: ApplicationDatabase): IStatisticCovidDao =
-        applicationDatabase.getStatisticCovidDao()
 
     @Provides
     @Singleton
@@ -105,9 +99,8 @@ class ServiceModule {
     @Singleton
     fun providesServiceRepository(
         iServiceCovid: IServiceCovid,
-        historyCovidDao: IHistoryCovidDao,
-        statisticDao: IStatisticCovidDao
-    ): ServiceRepository = ServiceRepository(iServiceCovid, historyCovidDao, statisticDao)
+        historyCovidDao: IHistoryCovidDao
+    ): ServiceRepository = ServiceRepository(iServiceCovid, historyCovidDao)
 
     @CoroutineScopeIO
     @Provides

@@ -30,10 +30,6 @@ class AdminService @Inject constructor(private val controller: ServiceController
         controller.getAllUsers()
     }
 
-    fun deleteUser(user: User) {
-        controller.deleteUser(user)
-    }
-
     fun lockUser(user: User) {
         controller.lockUser(user)
     }
