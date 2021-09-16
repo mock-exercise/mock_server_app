@@ -37,10 +37,10 @@ class ServiceModule {
         Room.databaseBuilder(context, ApplicationDatabase::class.java, "ManagementCovid.db")
             .fallbackToDestructiveMigration().addCallback(callback).build()
 
-    @Provides
-    @Singleton
-    fun providesActiveDao(applicationDatabase: ApplicationDatabase): IActiveDao =
-        applicationDatabase.getActiveDao()
+//    @Provides
+//    @Singleton
+//    fun providesActiveDao(applicationDatabase: ApplicationDatabase): IActiveDao =
+//        applicationDatabase.getActiveDao()
 
     @Provides
     @Singleton

@@ -30,8 +30,8 @@ class ServerService : Service() {
 
     private val serviceCallbacks = RemoteCallbackList<IServerServiceCallback>()
 
-    @Inject
-    lateinit var activeDao: IActiveDao
+//    @Inject
+//    lateinit var activeDao: IActiveDao
 
     @Inject
     lateinit var genderDao: IGenderDao
@@ -93,7 +93,7 @@ class ServerService : Service() {
         }
 
         override fun userSignUp(user: User) {
-            ServerApplication.printLog(TAG, "Server service is proccessing sign up ...")
+            ServerApplication.printLog(TAG, "Server service is processing sign up ...")
             scope.launch {
                 val isUserExists = userDao.userSignIn(user.phone_number)
                 if (isUserExists) {
@@ -131,7 +131,7 @@ class ServerService : Service() {
         }
 
         override fun userSignIn(phone_number: String) {
-            ServerApplication.printLog(TAG, "Server service is proccessing sign in ...")
+            ServerApplication.printLog(TAG, "Server service is processing sign in ...")
             scope.launch {
                 val isUserExists = userDao.userSignIn(phone_number)
                 if (!isUserExists) {
@@ -161,7 +161,7 @@ class ServerService : Service() {
         }
 
         override fun insertHealth(health: Health) {
-            ServerApplication.printLog(TAG, "Server service is proccessing insert user health ...")
+            ServerApplication.printLog(TAG, "Server service is processing insert user health ...")
             scope.launch {
                 val healthId = userHealthDao.insertUserHealth(health)
                 if (healthId <= -1) {
@@ -188,7 +188,7 @@ class ServerService : Service() {
         override fun getUserHealths() {
             ServerApplication.printLog(
                 TAG,
-                "Server service is proccessing get all history health of user..."
+                "Server service is processing get all history health of user..."
             )
             scope.launch {
                 val listHealths = userHealthDao.getUserHealths()
@@ -216,7 +216,7 @@ class ServerService : Service() {
         }
 
         override fun getUserInformation(user_id: Int) {
-            ServerApplication.printLog(TAG, "Server service is proccessing get user...")
+            ServerApplication.printLog(TAG, "Server service is processing get user...")
             scope.launch {
                 val user = userDao.getUserInformation(user_id)
                 if (user == null) {
@@ -240,7 +240,7 @@ class ServerService : Service() {
         }
 
         override fun getAllUsers() {
-            ServerApplication.printLog(TAG, "Server service is proccessing get user...")
+            ServerApplication.printLog(TAG, "Server service is processing get user...")
             scope.launch {
                 val listAllUsers = userDao.getListUser()
                 if (listAllUsers == null) {
@@ -258,7 +258,7 @@ class ServerService : Service() {
         }
 
         override fun updateUser(user: User) {
-            ServerApplication.printLog(TAG, "Server service is proccessing update user...")
+            ServerApplication.printLog(TAG, "Server service is processing update user...")
             scope.launch {
                 val userId = userDao.updateUser(user)
                 if (userId > 0) {
@@ -306,7 +306,7 @@ class ServerService : Service() {
         }
 
         override fun lockUser(user: User) {
-            ServerApplication.printLog(TAG, "Server service is proccessing lock user...")
+            ServerApplication.printLog(TAG, "Server service is processing lock user...")
             scope.launch {
                 val userId = userDao.lockUser(user)
                 if (userId > 0) {
@@ -330,7 +330,7 @@ class ServerService : Service() {
         }
 
         override fun getStatus() {
-            ServerApplication.printLog(TAG, "Server service is proccessing get status...")
+            ServerApplication.printLog(TAG, "Server service is processing get status...")
             scope.launch {
                 val listStatus = statusDao.getStatus()
                 if (listStatus == null) {
@@ -348,7 +348,7 @@ class ServerService : Service() {
         }
 
         override fun getSymptom() {
-            ServerApplication.printLog(TAG, "Server service is proccessing get symptom ...")
+            ServerApplication.printLog(TAG, "Server service is processing get symptom ...")
             scope.launch {
                 val listSymptom = symptomDao.getSymptoms()
                 if (listSymptom == null) {
@@ -372,26 +372,26 @@ class ServerService : Service() {
             }
         }
 
-        override fun getActive() {
-            ServerApplication.printLog(TAG, "Server service is proccessing get active...")
-            scope.launch {
-                val listActive = activeDao.getActives()
-                if (listActive == null) {
-                    ServerApplication.printError(TAG, "List active is null ... ")
-                    postFailureResponse(RequestCode.GET_ACTIVE, ResponseCode.ERROR_LIST_ACTIVE_NULL)
-                    return@launch
-                } else {
-                    ServerApplication.printLog(TAG, "List symptom is Successfully ... ")
-                    remoteBroadcast { index ->
-                        serviceCallbacks.getBroadcastItem(index)
-                            .onGetActive(ActiveResponse(ResponseCode.SUCCESS, listActive))
-                    }
-                }
-            }
-        }
+//        override fun getActive() {
+//            ServerApplication.printLog(TAG, "Server service is processing get active...")
+//            scope.launch {
+//                val listActive = activeDao.getActives()
+//                if (listActive == null) {
+//                    ServerApplication.printError(TAG, "List active is null ... ")
+//                    postFailureResponse(RequestCode.GET_ACTIVE, ResponseCode.ERROR_LIST_ACTIVE_NULL)
+//                    return@launch
+//                } else {
+//                    ServerApplication.printLog(TAG, "List symptom is Successfully ... ")
+//                    remoteBroadcast { index ->
+//                        serviceCallbacks.getBroadcastItem(index)
+//                            .onGetActive(ActiveResponse(ResponseCode.SUCCESS, listActive))
+//                    }
+//                }
+//            }
+//        }
 
         override fun getGender() {
-            ServerApplication.printLog(TAG, "Server service is proccessing get gender...")
+            ServerApplication.printLog(TAG, "Server service is processing get gender...")
             scope.launch {
                 val listGender = genderDao.getGender()
                 if (listGender == null) {
@@ -411,7 +411,7 @@ class ServerService : Service() {
         override fun getHistoryCovidVn() {
             ServerApplication.printLog(
                 TAG,
-                "Server service is proccessing get all history covid of VietNam ..."
+                "Server service is processing get all history covid of VietNam ..."
             )
             scope.launch {
                 val listHistory = historyCovidDao.getHistoryCovidOfVn()
@@ -443,7 +443,7 @@ class ServerService : Service() {
         override fun getHistoryCovidWorld() {
             ServerApplication.printLog(
                 TAG,
-                "Server service is proccessing get all history covid of World wide  ..."
+                "Server service is processing get all history covid of World wide  ..."
             )
             scope.launch {
                 val listHistory = historyCovidDao.getHistoryCovidOfWorld()

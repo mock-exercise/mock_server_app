@@ -14,9 +14,9 @@ class AdminService @Inject constructor(private val controller: ServiceController
         controller.getSymptom()
     }
 
-    fun getActive() {
-        controller.getActive()
-    }
+//    fun getActive() {
+//        controller.getActive()
+//    }
 
     fun getGender() {
         controller.getGender()

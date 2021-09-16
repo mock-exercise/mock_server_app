@@ -86,8 +86,7 @@ dependencies {
 
     implementation "androidx.work:work-runtime-ktx:$work_version"
     //AIDL
-    implementation 'com.github.GiangGiang1105:ConnectorLib:0.3.7'
-
+    implementation 'com.github.GiangGiang1105:ConnectorLib:0.4.2'
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

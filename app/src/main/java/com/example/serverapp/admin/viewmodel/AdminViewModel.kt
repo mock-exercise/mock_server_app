@@ -36,8 +36,8 @@ class AdminViewModel @Inject constructor(
     var listGender = MutableLiveData<List<Gender>>()
         private set
 
-    var listActive = MutableLiveData<List<Active>>()
-        private set
+//    var listActive = MutableLiveData<List<Active>>()
+//        private set
 
     var listStatus = MutableLiveData<List<Status>>()
         private set
@@ -84,14 +84,14 @@ class AdminViewModel @Inject constructor(
         }
     }
 
-    override fun onGetActive(activeResponse: ActiveResponse) {
-        when (activeResponse.responseCode) {
-            ResponseCode.SUCCESS -> {
-                Log.d(TAG, "onGetActive: nhan active thanh cong... ")
-                listActive.value = activeResponse.listActive
-            }
-        }
-    }
+//    override fun onGetActive(activeResponse: ActiveResponse) {
+//        when (activeResponse.responseCode) {
+//            ResponseCode.SUCCESS -> {
+//                Log.d(TAG, "onGetActive: nhan active thanh cong... ")
+//                listActive.value = activeResponse.listActive
+//            }
+//        }
+//    }
 
     override fun onGetAllUsers(listUsersResponse: ListUsersResponse) {
         when (listUsersResponse.responseCode) {
@@ -155,7 +155,7 @@ class AdminViewModel @Inject constructor(
         getGender()
         getSymptom()
         getStatus()
-        getActive()
+//        getActive()
     }
 
     fun getStatus() = viewModelScope.launch {
@@ -166,9 +166,9 @@ class AdminViewModel @Inject constructor(
         repository.getSymptom()
     }
 
-    fun getActive() = viewModelScope.launch {
-        repository.getActive()
-    }
+//    fun getActive() = viewModelScope.launch {
+//        repository.getActive()
+//    }
 
     fun getGender() = viewModelScope.launch {
         repository.getGender()

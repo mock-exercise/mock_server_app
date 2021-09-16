@@ -12,13 +12,12 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Database(
-    entities = [User::class, Health::class, Gender::class, Active::class, Status::class, Symptom::class,  HistoryCovid::class],
+    entities = [User::class, Health::class, Gender::class, Status::class, Symptom::class,  HistoryCovid::class],
     version = 1,
     exportSchema = false
 )
 abstract class ApplicationDatabase : RoomDatabase() {
 
-    abstract fun getActiveDao(): IActiveDao
 
     abstract fun getGenderDao(): IGenderDao
 
@@ -38,17 +37,16 @@ abstract class ApplicationDatabase : RoomDatabase() {
     ) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
-            val activeDao = database.get().getActiveDao()
             val statusDao = database.get().getStatusDao()
             val genderDao = database.get().getGenderDao()
             val symptomDao = database.get().getSymptomDao()
             applicationScope.launch {
-                activeDao.insertActivies(
-                    listOf(
-                        Active(active_name = "Hoạt động"),
-                        Active(active_name = "Đã khóa")
-                    )
-                )
+//                activeDao.insertActivies(
+//                    listOf(
+//                        Active(active_name = "Hoạt động"),
+//                        Active(active_name = "Đã khóa")
+//                    )
+//                )
                 statusDao.insertListStatus(
                     listOf(
                         Status(status_name = "An toàn"),
