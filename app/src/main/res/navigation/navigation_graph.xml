@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/listUserFragment"
         android:name="com.example.serverapp.admin.view.fragment.ListUserFragment"
-        android:label="fragment_list_user"
-        tools:layout="@layout/fragment_list_user" >
+        android:label="@string/title_user_list"
+        tools:layout="@layout/fragment_list_user">
         <action
             android:id="@+id/action_listUserFragment_to_userDetailFragment"
             app:destination="@id/userDetailFragment" />
@@ -17,10 +17,13 @@
     <fragment
         android:id="@+id/userDetailFragment"
         android:name="com.example.serverapp.admin.view.fragment.UserDetailFragment"
-        android:label="fragment_user_detail"
-        tools:layout="@layout/fragment_user_detail" >
+        android:label="@string/title_user_detail"
+        tools:layout="@layout/fragment_user_detail">
         <action
             android:id="@+id/action_userDetailFragment_to_listUserFragment"
             app:destination="@id/listUserFragment" />
+        <argument
+            android:name="itemUser"
+            app:argType="com.example.connectorlibrary.enitity.User" />
     </fragment>
 </navigation>

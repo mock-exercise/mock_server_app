@@ -1,60 +1,109 @@
 package com.example.serverapp.admin.view.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.connectorlibrary.enitity.Active
+import com.example.connectorlibrary.enitity.User
 import com.example.serverapp.R
+import com.example.serverapp.admin.view.adapter.UserAdapter
+import com.example.serverapp.admin.viewmodel.AdminViewModel
+import com.example.serverapp.databinding.FragmentListUserBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ListUserFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class ListUserFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    lateinit var binding: FragmentListUserBinding
+    lateinit var controller: NavController
+    private val userAdapter by lazy { UserAdapter() }
+    private val viewModel: AdminViewModel by activityViewModels()
+    private var listActive: List<Active> = listOf()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentListUserBinding.inflate(inflater, container, false)
+        controller = findNavController()
+
+        handleTasks()
+
+        return binding.root
+    }
+
+    private fun handleTasks() {
+        initRecyclerView()
+        getListUsersFromApi()
+        observerListUsers()
+        setItemClickListUser()
+    }
+
+    private fun initRecyclerView() {
+        binding.usersRecyclerView.apply {
+            adapter = userAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            setHasFixedSize(true)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_user, container, false)
+    private fun getListUsersFromApi() {
+        viewModel.isServerConnected.observe(viewLifecycleOwner, {
+            if (it) viewModel.apply {
+                getAllUsers()
+                getActive()
+            }
+        })
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListUserFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListUserFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun observerListUsers() {
+        viewModel.listUsers.observe(viewLifecycleOwner, {
+            it?.let {
+                userAdapter.differ.submitList(it)
             }
+        })
+    }
+
+    private fun setItemClickListUser() {
+        userAdapter.setOnItemClickListener {
+            alertDialog(user = it)
+        }
+    }
+
+    private fun alertDialog(user: User) {
+        var isActive = false
+        listActive.find { it.active_id == user.active_id }?.let { it ->
+            isActive = it.active_name
+        }
+        val stringNegation =
+            if (isActive) R.string.lock_user
+            else R.string.open_lock_user
+
+        val builder = AlertDialog.Builder(context)
+        builder.apply {
+            setMessage(R.string.messenger_dialog)
+            setPositiveButton(R.string.positive) { _, _ ->
+                val action =
+                    ListUserFragmentDirections.actionListUserFragmentToUserDetailFragment(user)
+                controller.navigate(action)
+            }
+            setNegativeButton(
+                stringNegation.toString()
+            ) { _, _ ->
+                listActive.find { it.active_name == !isActive }?.let {
+                    user.active_id = it.active_id
+                }
+                viewModel.lockUser(user)
+            }
+            create()
+        }
     }
 }

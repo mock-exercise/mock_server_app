@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">ServerApp</string>
     <string name="title_user_list">Danh sách người dùng</string>
-    <string name="total_user">Tổng số User: </string>
+    <string name="title_user_detail">Thông tin người dùng</string>
+    <string name="total_user">Tổng số người dùng: <b>%d</b> </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Admin management user-->
     <string name="success_lock_user"> Khóa tài khoản này thành công</string>
     <string name="success_connected">Connected server!</string>
+    <string name="title_dialog"></string>
+    <string name="messenger_dialog">Bạn muốn thực hiện tác vụ nào?</string>
+    <string name="positive">Xem người dùng</string>
+    <string name="lock_user">Khóa người dùng</string>
+    <string name="open_lock_user">Mở khóa người dùng</string>
 </resources>

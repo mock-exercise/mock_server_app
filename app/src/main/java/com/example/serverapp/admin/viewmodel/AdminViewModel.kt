@@ -1,6 +1,5 @@
 package com.example.serverapp.admin.viewmodel
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
@@ -23,6 +22,9 @@ class AdminViewModel @Inject constructor(
     private val service: ServiceControllerAdmin
 ) : ViewModel(),
     LifecycleObserver, CallbackConnector.CallbackConnectorAdmin {
+
+    var isServerConnected = MutableLiveData(false)
+        private set
 
     var listUsers = MutableLiveData<List<User>>()
         private set
@@ -145,10 +147,6 @@ class AdminViewModel @Inject constructor(
         }
     }
 
-    override fun onServerConnected() {
-        Log.d(TAG, "onServerConnected: ")
-        ServerApplication.showToast(context, R.string.success_connected)
-    }
 
     fun getBasicData() {
         Log.d(TAG, "getBasicData!")
@@ -198,6 +196,13 @@ class AdminViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         service.removeCallback(this)
+        isServerConnected.value = false
+    }
+
+    override fun onServerConnected() {
+        Log.d(TAG, "onServerConnected: ")
+        ServerApplication.showToast(context, R.string.success_connected)
+        isServerConnected.value = true
     }
 
     companion object {

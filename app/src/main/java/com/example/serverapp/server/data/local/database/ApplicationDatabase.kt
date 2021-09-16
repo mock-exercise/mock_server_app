@@ -45,8 +45,8 @@ abstract class ApplicationDatabase : RoomDatabase() {
             applicationScope.launch {
                 activeDao.insertActivies(
                     listOf(
-                        Active(active_name = "Hoạt động"),
-                        Active(active_name = "Đã khóa")
+                        Active(active_name = true),
+                        Active(active_name = false)
                     )
                 )
                 statusDao.insertListStatus(
