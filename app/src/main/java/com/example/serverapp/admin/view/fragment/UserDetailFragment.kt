@@ -54,6 +54,4 @@ class UserDetailFragment : Fragment() {
             binding.user = args.itemUser
         })
     }
-
-
 }

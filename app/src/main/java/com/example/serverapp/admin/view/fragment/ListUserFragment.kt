@@ -66,6 +66,7 @@ class ListUserFragment : Fragment() {
         viewModel.listUsers.observe(viewLifecycleOwner, {
             it?.let {
                 userAdapter.differ.submitList(it)
+                binding.totalUser = it.size.toString()
             }
         })
     }

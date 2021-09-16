@@ -2,7 +2,7 @@
     <string name="app_name">ServerApp</string>
     <string name="title_user_list">Danh sách người dùng</string>
     <string name="title_user_detail">Thông tin người dùng</string>
-    <string name="total_user">Tổng số người dùng: <b>%d</b> </string>
+    <string name="total_user">Tổng số người dùng: <b>%s</b> </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
