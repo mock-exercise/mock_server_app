@@ -1,6 +1,5 @@
 package com.example.serverapp.admin.viewmodel
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
@@ -24,6 +23,9 @@ class AdminViewModel @Inject constructor(
 ) : ViewModel(),
     LifecycleObserver, CallbackConnector.CallbackConnectorAdmin {
 
+    var isServerConnected = MutableLiveData(false)
+        private set
+
     var listUsers = MutableLiveData<List<User>>()
         private set
 
@@ -35,9 +37,6 @@ class AdminViewModel @Inject constructor(
 
     var listGender = MutableLiveData<List<Gender>>()
         private set
-
-//    var listActive = MutableLiveData<List<Active>>()
-//        private set
 
     var listStatus = MutableLiveData<List<Status>>()
         private set
@@ -83,15 +82,6 @@ class AdminViewModel @Inject constructor(
             }
         }
     }
-
-//    override fun onGetActive(activeResponse: ActiveResponse) {
-//        when (activeResponse.responseCode) {
-//            ResponseCode.SUCCESS -> {
-//                Log.d(TAG, "onGetActive: nhan active thanh cong... ")
-//                listActive.value = activeResponse.listActive
-//            }
-//        }
-//    }
 
     override fun onGetAllUsers(listUsersResponse: ListUsersResponse) {
         when (listUsersResponse.responseCode) {
@@ -145,19 +135,6 @@ class AdminViewModel @Inject constructor(
         }
     }
 
-    override fun onServerConnected() {
-        Log.d(TAG, "onServerConnected: ")
-        ServerApplication.showToast(context, R.string.success_connected)
-    }
-
-    fun getBasicData() {
-        Log.d(TAG, "getBasicData!")
-        getGender()
-        getSymptom()
-        getStatus()
-//        getActive()
-    }
-
     fun getStatus() = viewModelScope.launch {
         repository.getStatus()
     }
@@ -166,11 +143,8 @@ class AdminViewModel @Inject constructor(
         repository.getSymptom()
     }
 
-//    fun getActive() = viewModelScope.launch {
-//        repository.getActive()
-//    }
-
     fun getGender() = viewModelScope.launch {
+        Log.e(TAG, "getGender: 11111", )
         repository.getGender()
     }
 
@@ -198,6 +172,13 @@ class AdminViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         service.removeCallback(this)
+        isServerConnected.value = false
+    }
+
+    override fun onServerConnected() {
+        Log.d(TAG, "onServerConnected: ")
+        ServerApplication.showToast(context, R.string.success_connected)
+        isServerConnected.value = true
     }
 
     companion object {

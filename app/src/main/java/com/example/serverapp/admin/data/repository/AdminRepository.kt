@@ -16,11 +16,7 @@ class AdminRepository @Inject constructor(private val adminService: AdminService
         adminService.getSymptom()
     }
 
-//    suspend fun getActive() {
-//        adminService.getActive()
-//    }
-
-    suspend fun getGender() {
+    suspend fun getGender() = safeApiCall {
         adminService.getGender()
     }
 

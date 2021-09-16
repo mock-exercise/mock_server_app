@@ -41,12 +41,7 @@ abstract class ApplicationDatabase : RoomDatabase() {
             val genderDao = database.get().getGenderDao()
             val symptomDao = database.get().getSymptomDao()
             applicationScope.launch {
-//                activeDao.insertActivies(
-//                    listOf(
-//                        Active(active_name = "Hoạt động"),
-//                        Active(active_name = "Đã khóa")
-//                    )
-//                )
+
                 statusDao.insertListStatus(
                     listOf(
                         Status(status_name = "An toàn"),

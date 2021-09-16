@@ -30,9 +30,6 @@ class ServerService : Service() {
 
     private val serviceCallbacks = RemoteCallbackList<IServerServiceCallback>()
 
-//    @Inject
-//    lateinit var activeDao: IActiveDao
-
     @Inject
     lateinit var genderDao: IGenderDao
 
@@ -371,24 +368,6 @@ class ServerService : Service() {
                 }
             }
         }
-
-//        override fun getActive() {
-//            ServerApplication.printLog(TAG, "Server service is processing get active...")
-//            scope.launch {
-//                val listActive = activeDao.getActives()
-//                if (listActive == null) {
-//                    ServerApplication.printError(TAG, "List active is null ... ")
-//                    postFailureResponse(RequestCode.GET_ACTIVE, ResponseCode.ERROR_LIST_ACTIVE_NULL)
-//                    return@launch
-//                } else {
-//                    ServerApplication.printLog(TAG, "List symptom is Successfully ... ")
-//                    remoteBroadcast { index ->
-//                        serviceCallbacks.getBroadcastItem(index)
-//                            .onGetActive(ActiveResponse(ResponseCode.SUCCESS, listActive))
-//                    }
-//                }
-//            }
-//        }
 
         override fun getGender() {
             ServerApplication.printLog(TAG, "Server service is processing get gender...")
